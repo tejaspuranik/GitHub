@@ -62,9 +62,7 @@ public class AllAnalysisKpiCohort
       }
      private static DecimalFormat df2 = new DecimalFormat(".##");
       
-	  public static void main(String[] args) throws ParseException, IOException {
-
-		  
+	  public static void main(String[] args) throws ParseException, IOException {		  
 	        String csvFile = "./"+"AGENT_FILE_JAVA_ATT_COHORT_V032.csv";
 	        BufferedReader br = null;
 	        BufferedReader br1 = null;
@@ -98,9 +96,7 @@ public class AllAnalysisKpiCohort
 	        br1 = new BufferedReader(new InputStreamReader(System.in));
 	        System.out.println("Enter LOB");
         	lob = br1.readLine();
-        	
-	        
-	       
+        		       
 	        System.out.println("Enter y to specify partner or n to continue analysis");
 	        answer = br1.readLine();
 	        if(answer.equalsIgnoreCase("y"))
@@ -152,6 +148,8 @@ public class AllAnalysisKpiCohort
             
             String[] removedNull,removedNullAbts,removedNullFcr,removedNullSv60, removedNullSegNm, removedNullQueNm;
             ArrayList<String[]> attrition = new ArrayList<String[]>();
+            
+            int skipLine=0;
                     	        
 	        try 
 	        {	        
@@ -159,6 +157,12 @@ public class AllAnalysisKpiCohort
 	            
 	            while ((line = br.readLine()) != null) 
 	            {
+	            	if(skipLine==0)
+	            	{
+	            		skipLine++;
+	            		continue;
+	            	}
+	            		
 	                // use comma as separator
 	                String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 	                String[] segments = Arrays.copyOfRange(fields, segIndex, segIndex+numberOfMonths);
@@ -581,9 +585,7 @@ public class AllAnalysisKpiCohort
 		            }
 	            }
 	            
-	          
- 	            
- 	           displayTotalVolume(); 
+	           displayTotalVolume(); 
  	           displayAttritionAnalysisWithoutQuartiles();
  	           // Write the output to a file
  	           FileOutputStream fileOut = new FileOutputStream("./"+"Agent_Attrition_Cohort_Analysis.xlsx");
