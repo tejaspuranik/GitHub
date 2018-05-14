@@ -24,27 +24,6 @@ public class MyAgent {
 	private int Oct31Diff;
 	private int Nov30Diff;
 	private int Dec31Diff;
-	private int Jan31Diff18;
-	private int Feb28Diff18;
-	private int Mar31Diff18;
-	public int getJan31Diff18() {
-		return Jan31Diff18;
-	}
-	public void setJan31Diff18(int jan31Diff18) {
-		Jan31Diff18 = jan31Diff18;
-	}
-	public int getFeb28Diff18() {
-		return Feb28Diff18;
-	}
-	public void setFeb28Diff18(int feb28Diff18) {
-		Feb28Diff18 = feb28Diff18;
-	}
-	public int getMar31Diff18() {
-		return Mar31Diff18;
-	}
-	public void setMar31Diff18(int mar31Diff18) {
-		Mar31Diff18 = mar31Diff18;
-	}
 	private int May01Diff;
 	private String lob;
 	private ArrayList<Double> abtMonths;

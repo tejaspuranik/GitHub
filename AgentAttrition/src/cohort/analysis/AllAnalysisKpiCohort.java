@@ -63,7 +63,7 @@ public class AllAnalysisKpiCohort
      private static DecimalFormat df2 = new DecimalFormat(".##");
       
 	  public static void main(String[] args) throws ParseException, IOException {		  
-	        String csvFile = "./"+"AGENT_FILE_JAVA_ATT_COHORT_V032.csv";
+	        String csvFile = "./"+"AGENT_ATTRITION_COHORT_ANALYSIS_INPUT.csv";//AGENT_FILE_JAVA_ATT_COHORT_V032.csv
 	        BufferedReader br = null;
 	        BufferedReader br1 = null;
 	       	        
@@ -90,8 +90,8 @@ public class AllAnalysisKpiCohort
 	        PrintWriter pw = new PrintWriter(new File("./"+"Debug.csv"));
 	        sb = new StringBuilder();
 	      
-	        int segIndex=26;//Hardcoded for reading purposes change later
-	        int numberOfMonths =15;
+	        int segIndex=23;//Hardcoded for reading purposes change later
+	        int numberOfMonths =12;
 	        	        	        
 	        br1 = new BufferedReader(new InputStreamReader(System.in));
 	        System.out.println("Enter LOB");
@@ -164,7 +164,12 @@ public class AllAnalysisKpiCohort
 	            	}
 	            		
 	                // use comma as separator
+	            	//line = line.replace("\"", "");
 	                String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+	                for(int t1=0;t1<fields.length;t1++)
+	                {
+	                	fields[t1]=fields[t1].replaceAll("\"", "");
+	                }
 	                String[] segments = Arrays.copyOfRange(fields, segIndex, segIndex+numberOfMonths);
 	                
 	                removedNull = Arrays.stream(segments)
@@ -192,13 +197,13 @@ public class AllAnalysisKpiCohort
                             value != null && !value.equals(".") && value.length() > 0
                     ).toArray(size -> new String[size]);
 	                
-	                String[] segNameMonths = Arrays.copyOfRange(fields, segIndex+(numberOfMonths*4), segIndex+(numberOfMonths*5));
-	                removedNullSegNm= Arrays.stream(segNameMonths)
+	                String[] segNameMonths = Arrays.copyOfRange(fields, segIndex+(numberOfMonths*4), segIndex+(numberOfMonths*5)+1);//As there is one month 	                															
+	                removedNullSegNm= Arrays.stream(segNameMonths)																	//extra for segment/Queue
 	                        .filter(value ->
                             value != null && !value.equals(".") && value.length() > 0
                     ).toArray(size -> new String[size]);
 	                
-	                String[] queueNameMonths = Arrays.copyOfRange(fields, segIndex+(numberOfMonths*5), segIndex+(numberOfMonths*6));
+	                String[] queueNameMonths = Arrays.copyOfRange(fields, segIndex+(numberOfMonths*5)+1, segIndex+(numberOfMonths*6)+1);
 	                removedNullQueNm= Arrays.stream(queueNameMonths)
 	                        .filter(value ->
                             value != null && !value.equals(".") && value.length() > 0
@@ -261,7 +266,7 @@ public class AllAnalysisKpiCohort
 	            			queueNmMonths.add(removedNullQueNm[o]);	   
 	            	}
 	            	agent.setQueueNameMonths(queueNmMonths);
-	            		            	
+	            	
 	                while(i<segIndex)
 	                {
 	                	switch(i)
@@ -325,23 +330,14 @@ public class AllAnalysisKpiCohort
 	                			break; 
 	                		case 19:
 	                			agent.setDec31Diff(Integer.parseInt(fields[i]));
-	                			break; 
+	                			break; 	                		
 	                		case 20:
-	                			agent.setJan31Diff18((Integer.parseInt(fields[i])));
-	                			break; 
-	                		case 21:
-	                			agent.setFeb28Diff18(Integer.parseInt(fields[i]));
-	                			break; 
-	                		case 22:
-	                			agent.setMar31Diff18(Integer.parseInt(fields[i]));
-	                			break; 
-	                		case 23:
 	                			agent.setMay01Diff(Integer.parseInt(fields[i]));
 	                			break; 
-	                		case 24:
+	                		case 21:
 	                			agent.setResult(fields[i]);
 	                			break; 
-	                		case 25:
+	                		case 22:
 	                			agent.setLob(fields[i]);	                			
 	                			break; 
 	                	}
@@ -364,7 +360,7 @@ public class AllAnalysisKpiCohort
 	            		result="RECOMMENDED";
 	            		break;
 	            	case 3:
-	            		result="RECOMMENDED WITH RESERVATIONS";
+	            		result="RECOMMENDED WITH RESERVATION";
 	            		break;
 	            	}
 	                abtSumMatrix = new double[12][4];
@@ -393,17 +389,18 @@ public class AllAnalysisKpiCohort
 	 						{						
 	 	            			siteFlag = agent.getSiteDesc().equalsIgnoreCase(site);
 	 						}
-	 	            		if(!locationFlag)
-	 						{						
-	 	            			locationFlag = agent.getLocation().equalsIgnoreCase(location);
-	 						}
 	 	            		if(!partnerFlag)
 	 						{						
 	 	            			partnerFlag = agent.getPartner().equalsIgnoreCase(partner);
 	 						}
-	 						
+	 	            		if(!locationFlag)
+	 						{							 	            			
+	 	            			locationFlag = agent.getLocation().equalsIgnoreCase(location) && !agent.getPartner().equalsIgnoreCase(partner);
+	 	            			partnerFlag=true;
+	 						}
+	 	            			 						
 	 	            		if(siteFlag && locationFlag && partnerFlag)
-	 	            		{	 	            			
+	 	            		{	 	   
 	 	            			quartilePerformanceKpiAnalysis(agent,result);
  	            			    quartilePerformanceListAnalysis(agent.getSegMonths(),agent,result,Operation.QuartilePerformance);
 	 	            		}	
@@ -460,15 +457,16 @@ public class AllAnalysisKpiCohort
 	 						{						
 	 	            			siteFlag = agent.getSiteDesc().equalsIgnoreCase(site);
 	 						}
-	 	            		if(!locationFlag)
-	 						{						
-	 	            			locationFlag = agent.getLocation().equalsIgnoreCase(location);
-	 						}
-	 	            		if(!partnerFlag)
+		            		if(!partnerFlag)
 	 						{						
 	 	            			partnerFlag = agent.getPartner().equalsIgnoreCase(partner);
 	 						}
-	 	            		
+	 	            		if(!locationFlag)
+	 						{							 	            			
+	 	            			locationFlag = agent.getLocation().equalsIgnoreCase(location) && !agent.getPartner().equalsIgnoreCase(partner);
+	 	            			partnerFlag=true;
+	 						}
+	 	            			 	            		
 	 	            		if(siteFlag && locationFlag && partnerFlag)//	&& agent.getQueueNameMonths().get(0).equalsIgnoreCase(queueName) && agent.getSegNameMonths().get(0).equalsIgnoreCase(segmentName) 	 	         			
 	 	            		{
 	 	            			//NormalizeFlag=true;
@@ -507,8 +505,9 @@ public class AllAnalysisKpiCohort
 			                
 			                int last = attrition.get(k1).length-1;			                
 			                
-			                if(last>-1 && monthNo>0)
+			                if(last>-1 && monthNo>0 && monthNo<13)
 			                {
+			                	//System.out.println(last+"\t"+monthNo+"\t"+attrition.get(k1).length+"\t"+agent.getAttritionCount()+"\t"+agent.getEmpNo());
 			                	tempAttr.set(monthNo-1, Float.parseFloat(attrition.get(k1)[last]));
 			                }
 			              		              
@@ -525,13 +524,14 @@ public class AllAnalysisKpiCohort
 	 						{						
 	 	            			siteFlag = agent.getSiteDesc().equalsIgnoreCase(site);
 	 						}
-	 	            		if(!locationFlag)
-	 						{						
-	 	            			locationFlag = agent.getLocation().equalsIgnoreCase(location);
-	 						}
-	 	            		if(!partnerFlag)
+		            		if(!partnerFlag)
 	 						{						
 	 	            			partnerFlag = agent.getPartner().equalsIgnoreCase(partner);
+	 						}
+	 	            		if(!locationFlag)
+	 						{							 	            			
+	 	            			locationFlag = agent.getLocation().equalsIgnoreCase(location) && !agent.getPartner().equalsIgnoreCase(partner);
+	 	            			partnerFlag=true;
 	 						}
 	 	            		if(siteFlag && locationFlag && partnerFlag)
 	 	            		{
@@ -539,6 +539,8 @@ public class AllAnalysisKpiCohort
 	 	            			int monthNo = (int) Math.ceil(agent.getAttritionCount() /30);	            	
 				                if(agent.getAttritionCount()%30>0)
 				                	monthNo+=1;
+				                
+				                if(monthNo<13)
 	 	            			attritionWithoutQuartileAnalysis(monthNo,agent,result);
 	 	            		}	
 	 	                    siteFlag= (site ==null);
@@ -559,13 +561,14 @@ public class AllAnalysisKpiCohort
 	 						{						
 	 	            			siteFlag = agent.getSiteDesc().equalsIgnoreCase(site);
 	 						}
-	 	            		if(!locationFlag)
-	 						{						
-	 	            			locationFlag = agent.getLocation().equalsIgnoreCase(location);
-	 						}
-	 	            		if(!partnerFlag)
+		            		if(!partnerFlag)
 	 						{						
 	 	            			partnerFlag = agent.getPartner().equalsIgnoreCase(partner);
+	 						}
+	 	            		if(!locationFlag)
+	 						{							 	            			
+	 	            			locationFlag = agent.getLocation().equalsIgnoreCase(location) && !agent.getPartner().equalsIgnoreCase(partner);
+	 	            			partnerFlag=true;
 	 						}
 	 	            		if(siteFlag && locationFlag && partnerFlag)
 	 	            		{
@@ -1466,7 +1469,7 @@ public class AllAnalysisKpiCohort
 	        	case "RECOMMENDED":
 	        		resultIndex=2;
 	        		break;
-	        	case "RECOMMENDED WITH RESERVATIONS":
+	        	case "RECOMMENDED WITH RESERVATION":
 	        		resultIndex=3;
 	        		break;
         	}
@@ -1537,7 +1540,7 @@ public class AllAnalysisKpiCohort
             			{
             				var2 = Double.parseDouble(tempRow.getCell(startColIndexNew++).toString().replace("%", ""));
             			}           				
-            			double var1 = var2 +Math.round(((double)segQuartileCountMatrix[y][z]/totalAgentsByCategory[y][resultIndex])*100 * 100.0) / 100.0;
+            			double var1 = var2 +Math.round(((double)segQuartileCountMatrix[y][z]/totalAgentsByCategory[0][resultIndex])*100 * 100.0) / 100.0;//totalAgentsByCategory[y][resultIndex] changed to [0][resultIndex] for getting accurate %
             			var2=0;
             			sumAttrition+=var1;
             			System.out.println(sumAttrition+"\t"+var1);
@@ -1563,7 +1566,7 @@ public class AllAnalysisKpiCohort
 	        			{
 	        				var2 = Double.parseDouble(tempRow.getCell(endColIndexNew++).toString().replace("%", ""));
 	        			}  
-            			double var1 = var2 +Math.round(((double)segQuartileFailCountMatrix[y][z]/totalAgentsByCategory[y][totalAgentsByCategory[0].length-1])*100 * 100.0) / 100.0;
+            			double var1 = var2 +Math.round(((double)segQuartileFailCountMatrix[y][z]/totalAgentsByCategory[0][totalAgentsByCategory[0].length-1])*100 * 100.0) / 100.0;
             			var2=0;
             			sumAttritionFail+=var1;
             			row.createCell(colCount++).setCellValue(df2.format(var1)+"%");
@@ -1770,7 +1773,7 @@ public class AllAnalysisKpiCohort
 	        	case "RECOMMENDED":
 	        		resultIndex=2;
 	        		break;
-	        	case "RECOMMENDED WITH RESERVATIONS":
+	        	case "RECOMMENDED WITH RESERVATION":
 	        		resultIndex=3;
 	        		break;
         	}
@@ -1944,7 +1947,7 @@ public class AllAnalysisKpiCohort
 	        	case "RECOMMENDED":
 	        		resultIndex=2;
 	        		break;
-	        	case "RECOMMENDED WITH RESERVATIONS":
+	        	case "RECOMMENDED WITH RESERVATION":
 	        		resultIndex=3;
 	        		break;
         	}
@@ -2134,7 +2137,7 @@ public class AllAnalysisKpiCohort
 	        	case "RECOMMENDED":
 	        		resultIndex=2;
 	        		break;
-	        	case "RECOMMENDED WITH RESERVATIONS":
+	        	case "RECOMMENDED WITH RESERVATION":
 	        		resultIndex=3;
 	        		break;
         	}
@@ -2162,14 +2165,14 @@ public class AllAnalysisKpiCohort
 					if(monthNo>=agent.getQueueNameMonths().size())
 					{
 						monthForQS=agent.getQueueNameMonths().size()-1;
-					}					
+					}		
 					queueFlag = agent.getQueueNameMonths().get(monthForQS).equalsIgnoreCase(queueName);
 				}
 				if(segementFlag && queueFlag)
 				{			
 					if(agent.getPF().equalsIgnoreCase("fail"))
 					{								
-						if(resultIndex==0)
+						if(resultIndex==0)//Execute only once resultIndex can be any value between 0 to 3.
 						{							
 							AgentsAttritionByCategory[monthNo][totalAgentsByCategoryAttrition[0].length-1]+=1;						
 						}
@@ -2225,7 +2228,7 @@ public class AllAnalysisKpiCohort
 					   row.createCell(1).setCellValue("RECOMMENDED");
 					   break;
 				   case 3:
-					   row.createCell(1).setCellValue("RECOMMENDED WITH RESERVATIONS");
+					   row.createCell(1).setCellValue("RECOMMENDED WITH RESERVATION");
 					   break;			   
 			   }			
 			   row.createCell(2).setCellValue("FAIL");
@@ -2236,9 +2239,9 @@ public class AllAnalysisKpiCohort
 				   row = sheet6.createRow(rowCountSheet6);
 				   colCount=0;
 			       row.createCell(colCount++).setCellValue("Month-"+(u1+1));			       
-        		   cumulativePercentages+=Math.round(((double)AgentsAttritionByCategory[u1][u2]/totalAgentsByCategoryAttrition[u1][u2])*100 * 100.0) / 100.0;
+        		   cumulativePercentages+=Math.round(((double)AgentsAttritionByCategory[u1][u2]/totalAgentsByCategoryAttrition[0][u2])*100 * 100.0) / 100.0;
         		   row.createCell(colCount++).setCellValue(df2.format(cumulativePercentages)+"%");        		   
-        		   cumulativePercentagesFail+=Math.round(((double)AgentsAttritionByCategory[u1][AgentsAttritionByCategory[0].length-1]/totalAgentsByCategoryAttrition[u1][AgentsAttritionByCategory[0].length-1])*100 * 100.0) / 100.0;;
+        		   cumulativePercentagesFail+=Math.round(((double)AgentsAttritionByCategory[u1][AgentsAttritionByCategory[0].length-1]/totalAgentsByCategoryAttrition[0][AgentsAttritionByCategory[0].length-1])*100 * 100.0) / 100.0;;
         		   row.createCell(colCount++).setCellValue(df2.format(cumulativePercentagesFail)+"%");
         		   row.createCell(colCount++).setCellValue(df2.format(cumulativePercentages-cumulativePercentagesFail)+"%");
         		   rowCountSheet6++;
