@@ -21,7 +21,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class AllAnalysisKpiCohort 
+public class AnalysisWithoutSelect 
 {      
 	 //Just checking github setup
       static int[] totalVolume;
@@ -63,7 +63,7 @@ public class AllAnalysisKpiCohort
      private static DecimalFormat df2 = new DecimalFormat(".##");
       
 	  public static void main(String[] args) throws ParseException, IOException {		  
-	        String csvFile = "./"+"AGENT_ATTRITION_COHORT_ANALYSIS_INPUT.csv";//AGENT_FILE_JAVA_ATT_COHORT_V032.csv
+	        String csvFile = "./"+args[0];//AGENT_FILE_JAVA_ATT_COHORT_V032.csv
 	        BufferedReader br = null;
 	        BufferedReader br1 = null;
 	       	        
@@ -90,7 +90,7 @@ public class AllAnalysisKpiCohort
 	        PrintWriter pw = new PrintWriter(new File("./"+"Debug.csv"));
 	        sb = new StringBuilder();
 	      
-	        int segIndex=23;//Hardcoded for reading purposes change later
+	        int segIndex=21;//Hardcoded for reading purposes change later
 	        int numberOfMonths =12;
 	        	        	        
 	        br1 = new BufferedReader(new InputStreamReader(System.in));
@@ -293,51 +293,45 @@ public class AllAnalysisKpiCohort
 	                			agent.setAttritionFlag(Integer.parseInt(fields[i]));
 	                			break;
 	                		case 7:
-	                			agent.setPF(fields[i]);
-	                			break;
-	                		case 8:
 	                			agent.setJan31Diff(Integer.parseInt(fields[i]));
 	                			break;
-	                		case 9:
+	                		case 8:
 	                			agent.setFeb28Diff(Integer.parseInt(fields[i]));
 	                			break;
-	                		case 10:
+	                		case 9:
 	                			agent.setMar31Diff(Integer.parseInt(fields[i]));
 	                			break;
-	                		case 11:
+	                		case 10:
 	                			agent.setApr30Diff(Integer.parseInt(fields[i]));
 	                			break;
-	                		case 12:
+	                		case 11:
 	                			agent.setMay31Diff(Integer.parseInt(fields[i]));
 	                			break;  
-	                		case 13:
+	                		case 12:
 	                			agent.setJun30Diff(Integer.parseInt(fields[i]));
 	                			break;   
-	                		case 14:
+	                		case 13:
 	                			agent.setJul31Diff(Integer.parseInt(fields[i]));
 	                			break;   
-	                		case 15:
+	                		case 14:
 	                			agent.setAug31Diff(Integer.parseInt(fields[i]));
 	                			break;   
-	                		case 16:
+	                		case 15:
 	                			agent.setSep30Diff(Integer.parseInt(fields[i]));
 	                			break;   
-	                		case 17:
+	                		case 16:
 	                			agent.setOct31Diff(Integer.parseInt(fields[i]));
 	                			break;  
-	                		case 18:
+	                		case 17:
 	                			agent.setNov30Diff(Integer.parseInt(fields[i]));
 	                			break; 
-	                		case 19:
+	                		case 18:
 	                			agent.setDec31Diff(Integer.parseInt(fields[i]));
 	                			break; 	                		
-	                		case 20:
+	                		case 19:
 	                			agent.setMay01Diff(Integer.parseInt(fields[i]));
 	                			break; 
-	                		case 21:
-	                			agent.setResult(fields[i]);
-	                			break; 
-	                		case 22:
+	                		case 20:
 	                			agent.setLob(fields[i]);	                			
 	                			break; 
 	                	}
@@ -346,23 +340,8 @@ public class AllAnalysisKpiCohort
 	                agents.add(agent);
 	            }
 	          
-	            for(int w=0;w<4;w++)
+	            for(int w=0;w<1;w++)
 	            {
-	            	switch(w)
-	            	{
-	            	case 0:
-	            		result="PASS";
-	            		break;
-	            	case 1:
-	            		result="STRONGLY RECOMMENDED";
-	            		break;
-	            	case 2:
-	            		result="RECOMMENDED";
-	            		break;
-	            	case 3:
-	            		result="RECOMMENDED WITH RESERVATION";
-	            		break;
-	            	}
 	                abtSumMatrix = new double[12][4];
 	    	        abtCountMatrix = new int[12][4];
 	    	        abtSumFailMatrix = new double[12][4];
@@ -401,8 +380,8 @@ public class AllAnalysisKpiCohort
 	 	            			 						
 	 	            		if(siteFlag && locationFlag && partnerFlag)
 	 	            		{	 	   
-	 	            			quartilePerformanceKpiAnalysis(agent,result);
- 	            			    quartilePerformanceListAnalysis(agent.getSegMonths(),agent,result,Operation.QuartilePerformance);
+	 	            			quartilePerformanceKpiAnalysis(agent);
+ 	            			    quartilePerformanceListAnalysis(agent.getSegMonths(),agent,Operation.QuartilePerformance);
 	 	            		}	
 	 	                    siteFlag= (site ==null);
 	 	                    locationFlag = (location ==null);
@@ -411,7 +390,7 @@ public class AllAnalysisKpiCohort
 	 	            }
 	            	 	    	      
 	            	System.out.println("Quartile Peformance Per Kpi Analysis");
-	 	            displayKpiAnalysis(result);
+	 	            displayKpiAnalysis();
 	 	            
 	 	            System.out.println();
 		            System.out.println("Quartile Peformance Analysis");
@@ -470,7 +449,7 @@ public class AllAnalysisKpiCohort
 	 	            		if(siteFlag && locationFlag && partnerFlag)//	&& agent.getQueueNameMonths().get(0).equalsIgnoreCase(queueName) && agent.getSegNameMonths().get(0).equalsIgnoreCase(segmentName) 	 	         			
 	 	            		{
 	 	            			//NormalizeFlag=true;
-	 	            			quartilePerformanceListAnalysis(agent.getSegProjectedMonths(),agent,result, Operation.QPNormalized);
+	 	            			quartilePerformanceListAnalysis(agent.getSegProjectedMonths(),agent, Operation.QPNormalized);
 	 	            			//NormalizeFlag=false;
 	 	            		}	
 	 	                    siteFlag= (site ==null);
@@ -535,13 +514,13 @@ public class AllAnalysisKpiCohort
 	 						}
 	 	            		if(siteFlag && locationFlag && partnerFlag)
 	 	            		{
-	 	            			quartilePerformanceListAnalysis(agent.getSegAttritionMonths(),agent,result,Operation.Attrition);
+	 	            			quartilePerformanceListAnalysis(agent.getSegAttritionMonths(),agent,Operation.Attrition);
 	 	            			int monthNo = (int) Math.ceil(agent.getAttritionCount() /30);	            	
 				                if(agent.getAttritionCount()%30>0)
 				                	monthNo+=1;
 				                
 				                if(monthNo<13)
-	 	            			attritionWithoutQuartileAnalysis(monthNo,agent,result);
+	 	            			attritionWithoutQuartileAnalysis(monthNo,agent);
 	 	            		}	
 	 	                    siteFlag= (site ==null);
 	 	                    locationFlag = (location ==null);
@@ -550,7 +529,7 @@ public class AllAnalysisKpiCohort
 		            }
 		            System.out.println("Quartile Attrition Analysis");
 		            //display(result,Operation.Attrition);
-		            displayAttrition(result);
+		            displayAttrition();
 		         		           
 		            totalVolume = new int[12];
 		            for(MyAgent agent:agents)
@@ -572,7 +551,7 @@ public class AllAnalysisKpiCohort
 	 						}
 	 	            		if(siteFlag && locationFlag && partnerFlag)
 	 	            		{
-	 	            			attritionAnalysis(agent.getSegAttritionMonths(),agent,result);
+	 	            			attritionAnalysis(agent.getSegAttritionMonths(),agent);
 	 	            			calculateTotalVolume(agent);
 	 	            		}	
 	 	                    siteFlag= (site ==null);
@@ -590,8 +569,9 @@ public class AllAnalysisKpiCohort
 	            
 	           displayTotalVolume(); 
  	           displayAttritionAnalysisWithoutQuartiles();
+ 	           initializeStaticVariables();
  	           // Write the output to a file
- 	           FileOutputStream fileOut = new FileOutputStream("./"+"Agent_Attrition_Cohort_Analysis.xlsx");
+ 	           FileOutputStream fileOut = new FileOutputStream("./"+args[1]);
  	           workbook.write(fileOut);
  	           fileOut.close(); 	           
 	           	          
@@ -614,7 +594,7 @@ public class AllAnalysisKpiCohort
 	        }
 		}
 		
-		public static void quartilePerformanceListAnalysis(ArrayList<Float> list, MyAgent agent, String result, Operation op)
+		public static void quartilePerformanceListAnalysis(ArrayList<Float> list, MyAgent agent, Operation op)
 		{
 			float epsilon=(float) 0.00000001;
 			int monthNo=-1,monthForQS=-1;
@@ -634,19 +614,11 @@ public class AllAnalysisKpiCohort
 					}
 					break;
 			}
-			
-			if(result==null)
-			{
-				result="PASS";
-			}
-			
+						
 			boolean segementFlag= segmentName==null;
 			
 			boolean queueFlag= queueName==null;
-			
-			
-			if((agent.getResult().equalsIgnoreCase(result)) || (agent.getPF().equalsIgnoreCase(result)))
-			{
+						
 				for(int y=0;y<list.size();y++)
 				{
 					if(op==Operation.Attrition)
@@ -706,59 +678,17 @@ public class AllAnalysisKpiCohort
 					}
 					segementFlag=segmentName==null;
 					queueFlag= queueName==null;
-				}	
-			}
-			if(agent.getPF().equalsIgnoreCase("fail"))
-			{
-				for(int y=0;y<list.size();y++)
-				{
-					if(!segementFlag && y<agent.getSegNameMonths().size())
-					{						
-						segementFlag = agent.getSegNameMonths().get(y).equalsIgnoreCase(segmentName);
-					}
-					if(!queueFlag && y<agent.getQueueNameMonths().size())
-					{
-						queueFlag = agent.getQueueNameMonths().get(y).equalsIgnoreCase(queueName);
-					}
-					if(segementFlag && queueFlag)
-					{	            			
-						if(Math.abs(list.get(y) - 1) < epsilon)
-		            	{							
-							segQuartileFailCountMatrix[y][0]+= 1;
-		            	}
-						if(Math.abs(list.get(y) - 2) < epsilon)
-		            	{
-							segQuartileFailCountMatrix[y][1]+= 1;
-		            	}
-						if(Math.abs(list.get(y) - 3) < epsilon)
-		            	{
-							segQuartileFailCountMatrix[y][2]+= 1;
-		            	}
-						if(Math.abs(list.get(y) - 4) < epsilon)
-		            	{
-							segQuartileFailCountMatrix[y][3]+= 1;
-		            	}
-					}
-					segementFlag=segmentName==null;
-					queueFlag= queueName==null;
-				}		
-			}
+				}			
 		}
 		
-		public static void quartilePerformanceKpiAnalysis(MyAgent agent, String result)
+		public static void quartilePerformanceKpiAnalysis(MyAgent agent)
 		{
-			if(result==null)
-			{
-				result="PASS";
-			}
 			float epsilon=(float) 0.00000001;
 			
 			boolean segementFlag= segmentName==null;
 			
 			boolean queueFlag= queueName==null;
 
-			if((agent.getResult().equalsIgnoreCase(result)) || (agent.getPF().equalsIgnoreCase(result)))
-			{
 				for(int j=0;j<12;j++)
 				{					
 					if(!segementFlag && j<agent.getSegMonths().size() && j<agent.getSegNameMonths().size())
@@ -844,97 +774,7 @@ public class AllAnalysisKpiCohort
 					}
 					segementFlag=segmentName==null;
 					queueFlag = queueName==null;
-				}
-			}
-			else if(agent.getPF().equalsIgnoreCase("fail"))
-			{
-				for(int j=0;j<12;j++)
-				{
-					if(!segementFlag && j<agent.getSegMonths().size() && j<agent.getSegNameMonths().size())
-					{
-						segementFlag = agent.getSegNameMonths().get(j).equalsIgnoreCase(segmentName);
-					}
-					
-					if(!queueFlag && j<agent.getSegMonths().size() && j<agent.getQueueNameMonths().size())
-					{
-						queueFlag = agent.getQueueNameMonths().get(j).equalsIgnoreCase(queueName);
-					}
-
-					if(j<agent.getSegMonths().size() && segementFlag && queueFlag)
-					{
-						if(Math.abs(agent.getSegMonths().get(j) - 1) < epsilon && agent.getAbtMonths().get(j)>0)
-		            	{
-							//System.out.print(agent.getAbtMonths().get(j)+"\t");
-							abtSumFailMatrix[j][0]+= agent.getAbtMonths().get(j);
-							abtCountFailMatrix[j][0]+= 1;
-		            	}
-						if(Math.abs(agent.getSegMonths().get(j) - 2) < epsilon && agent.getAbtMonths().get(j)>0)
-		            	{
-							//System.out.print(agent.getAbtMonths().get(j)+"\t");
-							abtSumFailMatrix[j][1]+= agent.getAbtMonths().get(j);
-							abtCountFailMatrix[j][1]+= 1;
-		            	}
-						if(Math.abs(agent.getSegMonths().get(j) - 3) < epsilon && agent.getAbtMonths().get(j)>0)
-		            	{
-							//System.out.print(agent.getAbtMonths().get(j)+"\t");
-							abtSumFailMatrix[j][2]+= agent.getAbtMonths().get(j);
-							abtCountFailMatrix[j][2]+= 1;
-		            	}
-						if(Math.abs(agent.getSegMonths().get(j) - 4) < epsilon && agent.getAbtMonths().get(j)>0)
-		            	{
-							//System.out.print(agent.getAbtMonths().get(j)+"\t");
-							abtSumFailMatrix[j][3]+= agent.getAbtMonths().get(j);
-							abtCountFailMatrix[j][3]+= 1;
-		            	}		
-						
-						//FCR
-						if(Math.abs(agent.getSegMonths().get(j) - 1) < epsilon && agent.getFcrMonths().get(j)>0)
-		            	{
-							fcrSumFailMatrix[j][0]+= agent.getFcrMonths().get(j);
-							fcrCountFailMatrix[j][0]+= 1;
-		            	}
-						if(Math.abs(agent.getSegMonths().get(j) - 2) < epsilon && agent.getFcrMonths().get(j)>0)
-		            	{
-							fcrSumFailMatrix[j][1]+= agent.getFcrMonths().get(j);
-							fcrCountFailMatrix[j][1]+= 1;
-		            	}
-						if(Math.abs(agent.getSegMonths().get(j) - 3) < epsilon && agent.getFcrMonths().get(j)>0)
-		            	{
-							fcrSumFailMatrix[j][2]+= agent.getFcrMonths().get(j);
-							fcrCountFailMatrix[j][2]+= 1;
-		            	}
-						if(Math.abs(agent.getSegMonths().get(j) - 4) < epsilon && agent.getFcrMonths().get(j)>0)
-		            	{
-							fcrSumFailMatrix[j][3]+= agent.getFcrMonths().get(j);
-							fcrCountFailMatrix[j][3]+= 1;
-		            	}	
-						
-						//SV60
-						if(Math.abs(agent.getSegMonths().get(j) - 1) < epsilon && agent.getSv60Months().get(j)>0)
-		            	{
-							sv60SumFailMatrix[j][0]+= agent.getSv60Months().get(j);
-							sv60CountFailMatrix[j][0]+= 1;
-		            	}
-						if(Math.abs(agent.getSegMonths().get(j) - 2) < epsilon && agent.getSv60Months().get(j)>0)
-		            	{
-							sv60SumFailMatrix[j][1]+= agent.getSv60Months().get(j);
-							sv60CountFailMatrix[j][1]+= 1;
-		            	}
-						if(Math.abs(agent.getSegMonths().get(j) - 3) < epsilon && agent.getSv60Months().get(j)>0)
-		            	{
-							sv60SumFailMatrix[j][2]+= agent.getSv60Months().get(j);
-							sv60CountFailMatrix[j][2]+= 1;
-		            	}
-						if(Math.abs(agent.getSegMonths().get(j) - 4) < epsilon && agent.getSv60Months().get(j)>0)
-		            	{
-							sv60SumFailMatrix[j][3]+= agent.getSv60Months().get(j);
-							sv60CountFailMatrix[j][3]+= 1;
-		            	}
-						segementFlag=segmentName==null;
-						queueFlag = queueName==null;
-					}		
-				}
-			}
+				}			
 		}
 		
 		public static void display(String result, Operation op) 
@@ -1083,24 +923,16 @@ public class AllAnalysisKpiCohort
 				}
 		}
 		
-		public static void displayKpiAnalysis(String result)
+		public static void displayKpiAnalysis()
 		{
-			  if(result==null)
-			  {
-				result="PASS";
-			  }
 			   Row row = sheet.createRow(rowCount);
-			   row.createCell(0).setCellValue("ABT "+ result);
-			   row.createCell(6).setCellValue("ABT FAIL");
-			   row.createCell(12).setCellValue("ABT DIFF");
-			   row.createCell(18).setCellValue("ABT "+ result);
-				row.createCell(24).setCellValue("ABT FAIL");
-				row.createCell(30).setCellValue("Difference PASS/FAIL ABT");
+			   row.createCell(0).setCellValue("ABT");
+			   row.createCell(6).setCellValue("ABT %");
 			   rowCount++;
 			   
 			   row = sheet.createRow(rowCount);
 			   int printIndex=0,q=0;
-			    while(printIndex<6)
+			    while(printIndex<2)
 			    {
 			    	row.createCell(q+1).setCellValue("Q1");
 		    		row.createCell(q+2).setCellValue("Q2");
@@ -1113,7 +945,7 @@ public class AllAnalysisKpiCohort
 			   
 			   
 			  //ABT		
-		      System.out.println("ABT Analysis "+ result);
+		      System.out.println("ABT Analysis ");
 		      
 		    
 	            for(int t=0;t<abtSumMatrix.length;t++)
@@ -1132,23 +964,8 @@ public class AllAnalysisKpiCohort
 	            		row.createCell(colCount++).setCellValue(abtSumMatrix[t][r]/abtCountMatrix[t][r]); 
 	            		sum+=abtSumMatrix[t][r]/abtCountMatrix[t][r];
 	            	}
-	            	colCount++;
-	            	row.createCell(colCount++).setCellValue("Month-"+(t+1));
-	            	
-	            	for(int r=0;r<abtSumFailMatrix[0].length;r++)
-	            	{
-	            		row.createCell(colCount++).setCellValue(abtSumFailMatrix[t][r]/abtCountFailMatrix[t][r]);	
-	            		sumFail+=abtSumFailMatrix[t][r]/abtCountFailMatrix[t][r];
-	            	}
-	            	
-	            	colCount++;
-	            	row.createCell(colCount++).setCellValue("Month-"+(t+1));
-	            	for(int r=0;r<abtSumFailMatrix[0].length;r++)
-	            	{	            		
-	            		row.createCell(colCount++).setCellValue((abtSumMatrix[t][r]/abtCountMatrix[t][r]) - (abtSumFailMatrix[t][r]/abtCountFailMatrix[t][r]));
-	            	}
+	    	            	
 	            	System.out.println();
-	            	
 	            	colCount++;
 	            	row.createCell(colCount++).setCellValue("Month-"+(t+1));
 	            	startColIndex=colCount;
@@ -1162,55 +979,13 @@ public class AllAnalysisKpiCohort
 	            			row.createCell(colCount++).setCellValue(var1+"%");
 	            		}	            			
 	            		
-	            	}
-	            	colCount++;
-	            	row.createCell(colCount++).setCellValue("Month-"+(t+1));
-	            	endColIndex=colCount;
-	            	for(int z=0;z<abtSumFailMatrix[0].length;z++)
-	            	{	            		            		
-	            		if(abtSumFailMatrix[t][z]==0 && sumFail==0)
-	            			row.createCell(colCount++).setCellValue(0);
-	            		else
-	            		{
-	            			double var1 = Math.round(((double)(abtSumFailMatrix[t][z]/abtCountFailMatrix[t][z])/sumFail)*100 * 100.0) / 100.0;
-	            			row.createCell(colCount++).setCellValue(var1+"%");
-	            		}	            			
-	            		
-	            	}
-	            	colCount++;
-	            	row.createCell(colCount++).setCellValue("Month-"+(t+1));
-	            	for(int z=0;z<abtCountFailMatrix[0].length;z++)
-	            	{	       
-	            		double diffPercent=Math.round((Double.parseDouble(row.getCell(startColIndex++).toString().replace("%", "")) - Double.parseDouble(row.getCell(endColIndex++).toString().replace("%", "")))*100.0) / 100.0;
-	            		row.createCell(colCount++).setCellValue(diffPercent+"%");
-	            		
-	            	}	            	  
+	            	}            	  
 	            	rowCount++;
 	            }
 	         
 	            row = sheet.createRow(rowCount);
 	            rowCount++;
-	            System.out.println("ABT Analysis FAIL");
-	            for(int t=0;t<abtSumFailMatrix.length;t++)
-	            {
-	            	for(int r=0;r<abtSumFailMatrix[0].length;r++)
-	            	{
-	            		System.out.print(abtSumFailMatrix[t][r]/abtCountFailMatrix[t][r]+"\t");//+ " sum "+abtSumFailMatrix[t][r]+"\t" + " count "+abtCountFailMatrix[t][r]+"\t"
-	            	}
-
-	            	System.out.println();
-	            }
-
-	            System.out.println("ABT Analysis DIFF");
-	            for(int t=0;t<abtSumFailMatrix.length;t++)
-	            {
-	            	for(int r=0;r<abtSumFailMatrix[0].length;r++)
-	            	{	            		
-	            		System.out.print((abtSumMatrix[t][r]/abtCountMatrix[t][r]) - (abtSumFailMatrix[t][r]/abtCountFailMatrix[t][r]) + "\t");//+ " sum "+abtSumFailMatrix[t][r]+"\t" + " count "+abtCountFailMatrix[t][r]+"\t"
-	            	}
-	            	System.out.println();
-	            }
-	            
+	           	            
 	               row = sheet.createRow(rowCount);
 	               row.createCell(0).setCellValue("FCR "+ result);
 				   row.createCell(6).setCellValue("FCR FAIL");
@@ -1449,30 +1224,10 @@ public class AllAnalysisKpiCohort
 	            }	            
 		}		
 		
-		public static void displayAttrition(String result) 
+		public static void displayAttrition() 
 		{
-			int resultIndex=-1;
 		    Row row = sheet4.createRow(rowCountSheet4);
 		    		 
-			if(result==null)
-			{
-				result="PASS";
-			}
-			switch(result)
-        	{
-	        	case "PASS":
-	        		resultIndex=0;
-	        		break;
-	        	case "STRONGLY RECOMMENDED":
-	        		resultIndex=1;
-	        		break;
-	        	case "RECOMMENDED":
-	        		resultIndex=2;
-	        		break;
-	        	case "RECOMMENDED WITH RESERVATION":
-	        		resultIndex=3;
-	        		break;
-        	}
 			row.createCell(0).setCellValue(result);
 			row.createCell(6).setCellValue("FAIL");
 			row.createCell(12).setCellValue(result);
@@ -1540,10 +1295,9 @@ public class AllAnalysisKpiCohort
             			{
             				var2 = Double.parseDouble(tempRow.getCell(startColIndexNew++).toString().replace("%", ""));
             			}           				
-            			double var1 = var2 +Math.round(((double)segQuartileCountMatrix[y][z]/totalAgentsByCategory[0][resultIndex])*100 * 100.0) / 100.0;//totalAgentsByCategory[y][resultIndex] changed to [0][resultIndex] for getting accurate %
+            			double var1 = var2 +Math.round(((double)segQuartileCountMatrix[y][z]/totalAgentsByCategory[0][0])*100 * 100.0) / 100.0;//totalAgentsByCategory[y][resultIndex] changed to [0][resultIndex] for getting accurate %
             			var2=0;
             			sumAttrition+=var1;
-            			System.out.println(sumAttrition+"\t"+var1);
             			row.createCell(colCount++).setCellValue(df2.format(var1)+"%");
             		//}	            			            		
             	}
@@ -1755,29 +1509,8 @@ public class AllAnalysisKpiCohort
 		     }
 		}
 		
-		public static void attritionAnalysis(ArrayList<Float> list, MyAgent agent, String result)
-		{
-			if(result==null)
-			{
-				result="PASS";
-			}
-			int resultIndex=-1;
-			switch(result)
-        	{
-	        	case "PASS":
-	        		resultIndex=0;
-	        		break;
-	        	case "STRONGLY RECOMMENDED":
-	        		resultIndex=1;
-	        		break;
-	        	case "RECOMMENDED":
-	        		resultIndex=2;
-	        		break;
-	        	case "RECOMMENDED WITH RESERVATION":
-	        		resultIndex=3;
-	        		break;
-        	}
-			
+		public static void attritionAnalysis(ArrayList<Float> list, MyAgent agent)
+		{			
 			ArrayList<Integer> temp = new ArrayList<>();
         	temp.add(agent.getJan31Diff());
         	temp.add(agent.getFeb28Diff());
@@ -1796,288 +1529,135 @@ public class AllAnalysisKpiCohort
 			
 			boolean queueFlag= queueName==null;
 			
-			if((agent.getResult().equalsIgnoreCase(result)) || (agent.getPF().equalsIgnoreCase(result))
-					|| (agent.getPF().equalsIgnoreCase("fail")))
-			{
-				for(int u=0;u<temp.size();u++)
-	        	{
-	        		int x = temp.get(u);
-	        		if(x>=0 && x<=30)
-	            	{
-	        			if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,0,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,0,resultIndex);
-	            	}
-	            	if(x>30 && x<=60)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,1,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,1,resultIndex);
-	            	}
-	            	if(x>60 && x<=90)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,2,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,2,resultIndex);
-	            	}
-	            	if(x>90 && x<=120)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,3,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,3,resultIndex);
-	            	}
-	            	if(x>120 && x<=150)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,4,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,4,resultIndex);
-	            	}
-	            	if(x>150 && x<=180)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,5,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,5,resultIndex);
-	            	}
-	            	if(x>180 && x<=210)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,6,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,6,resultIndex);
-	            	}
-	            	if(x>210 && x<=240)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,7,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,7,resultIndex);
-	            	}
-	            	if(x>240 && x<270)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,8,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,8,resultIndex);
-	            	}
-	            	if(x>270 && x<=300)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,9,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,9,resultIndex);
-	            	}
-	            	if(x>300 && x<=330)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,10,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,10,resultIndex);
-	            	}
-	            	if(x>330 && x<=360)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        				if(x<=agent.getAttritionCount())
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,11,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,11,resultIndex);
-	            	}
-	            	segementFlag=segmentName==null;
-					queueFlag= queueName==null;	
-	        	}	      							
-			}
-		}
-		
-		//Add this code when you will have column which is total number of hiring days since current day
-		/*public static void attritionAnalysis1(ArrayList<Float> list, MyAgent agent, String result)
-		{
-			if(result==null)
-			{
-				result="PASS";
-			}
-			int resultIndex=-1;
-			switch(result)
+			for(int u=0;u<temp.size();u++)
         	{
-	        	case "PASS":
-	        		resultIndex=0;
-	        		break;
-	        	case "STRONGLY RECOMMENDED":
-	        		resultIndex=1;
-	        		break;
-	        	case "RECOMMENDED":
-	        		resultIndex=2;
-	        		break;
-	        	case "RECOMMENDED WITH RESERVATION":
-	        		resultIndex=3;
-	        		break;
-        	}
-			boolean segementFlag= segmentName==null;
-			
-			boolean queueFlag= queueName==null;
-			int attritionCount = agent.getAttritionCount();
-			if((agent.getResult().equalsIgnoreCase(result)) || (agent.getPF().equalsIgnoreCase(result))
-					|| (agent.getPF().equalsIgnoreCase("fail")))
-			{
-				while(attritionCount>=0)
-				{
-					sb.append(agent.getEmpNo()+","+attritionCount);
-					sb.append('\n');
-					if(attritionCount>=0 && attritionCount<=30)
-	            	{
-	        			if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,0,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,0,resultIndex);
-	            	}
-	            	if(attritionCount>30 && attritionCount<=60)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,1,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,1,resultIndex);
-	            	}
-	            	if(attritionCount>60 && attritionCount<=90)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,2,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,2,resultIndex);
-	            	}
-	            	if(attritionCount>90 && attritionCount<=120)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,3,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,3,resultIndex);
-	            	}
-	            	if(attritionCount>120 && attritionCount<=150)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,4,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,4,resultIndex);
-	            	}
-	            	if(attritionCount>150 && attritionCount<=180)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,5,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,5,resultIndex);
-	            	}
-	            	if(attritionCount>180 && attritionCount<=210)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,6,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,6,resultIndex);
-	            	}
-	            	if(attritionCount>210 && attritionCount<=240)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,7,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,7,resultIndex);
-	            	}
-	            	if(attritionCount>240 && attritionCount<270)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,8,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,8,resultIndex);
-	            	}
-	            	if(attritionCount>270 && attritionCount<=300)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,9,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,9,resultIndex);
-	            	}
-	            	if(attritionCount>300 && attritionCount<=330)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,10,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,10,resultIndex);
-	            	}
-	            	if(attritionCount>330 && attritionCount<=360)
-	            	{
-	            		if(agent.getAttritionFlag()==1)
-	        			{
-	        					tempAttritionCalculation(segementFlag,queueFlag,agent,11,resultIndex);   
-	        			}
-	        			else
-	        				tempAttritionCalculation(segementFlag,queueFlag,agent,11,resultIndex);
-	            	}
-					attritionCount-=30;
-					segementFlag=segmentName==null;
-					queueFlag= queueName==null;	
-				}
-			}			
-		}*/
+        		int x = temp.get(u);
+        		if(x>=0 && x<=30)
+            	{
+        			if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,0);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,0);
+            	}
+            	if(x>30 && x<=60)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,1);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,1);
+            	}
+            	if(x>60 && x<=90)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,2);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,2);
+            	}
+            	if(x>90 && x<=120)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,3);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,3);
+            	}
+            	if(x>120 && x<=150)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,4);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,4);
+            	}
+            	if(x>150 && x<=180)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,5);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,5);
+            	}
+            	if(x>180 && x<=210)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,6);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,6);
+            	}
+            	if(x>210 && x<=240)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,7);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,7);
+            	}
+            	if(x>240 && x<270)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,8);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,8);
+            	}
+            	if(x>270 && x<=300)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,9);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,9);
+            	}
+            	if(x>300 && x<=330)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,10);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,10);
+            	}
+            	if(x>330 && x<=360)
+            	{
+            		if(agent.getAttritionFlag()==1)
+        			{
+        				if(x<=agent.getAttritionCount())
+        					tempAttritionCalculation(segementFlag,queueFlag,agent,11);   
+        			}
+        			else
+        				tempAttritionCalculation(segementFlag,queueFlag,agent,11);
+            	}
+            	segementFlag=segmentName==null;
+				queueFlag= queueName==null;	
+        	}	      							
+		}			
 		
-		public static void tempAttritionCalculation(boolean segementFlag, boolean queueFlag, MyAgent agent, int month, int resultIndex)
+		public static void tempAttritionCalculation(boolean segementFlag, boolean queueFlag, MyAgent agent, int month)
 		{
 			int monthForQS=-1;
 			//sb.append(agent.getEmpNo()+","+-1+","+resultIndex+'\n');
@@ -2101,90 +1681,44 @@ public class AllAnalysisKpiCohort
 			}
 			if(segementFlag && queueFlag)
 			{
-				//sb.append(agent.getEmpNo()+","+month+","+monthForQS+","+agent.getQueueNameMonths().get(monthForQS)+","+agent.getQueueNameMonths().size()+'\n');
-				if(agent.getPF().equalsIgnoreCase("fail"))
-				{								
-					if(resultIndex==0)
-					{
-						totalAgentsByCategoryAttrition[month][totalAgentsByCategoryAttrition[0].length-1]+=1;						
-					}
-				}					
-				else
-				{
-					totalAgentsByCategoryAttrition[month][resultIndex]+=1;
-				}			
+				totalAgentsByCategoryAttrition[month][0]+=1;		
 			}        		
 		}
 		
-		public static void attritionWithoutQuartileAnalysis(int monthNo,MyAgent agent, String result)
+		public static void attritionWithoutQuartileAnalysis(int monthNo,MyAgent agent)
 		{
 			int monthForQS=-1;
 			if(monthNo>0)
 				monthNo-=1;
-			if(result==null)
-			{
-				result="PASS";
-			}
-			int resultIndex=-1;
-			switch(result)
-        	{
-	        	case "PASS":
-	        		resultIndex=0;
-	        		break;
-	        	case "STRONGLY RECOMMENDED":
-	        		resultIndex=1;
-	        		break;
-	        	case "RECOMMENDED":
-	        		resultIndex=2;
-	        		break;
-	        	case "RECOMMENDED WITH RESERVATION":
-	        		resultIndex=3;
-	        		break;
-        	}
 			
 			boolean segementFlag= segmentName==null;
 			
 			boolean queueFlag= queueName==null;
 			
-			if((agent.getResult().equalsIgnoreCase(result)) || (agent.getPF().equalsIgnoreCase(result))
-					|| (agent.getPF().equalsIgnoreCase("fail")))
-			{
-				//if( monthNo<agent.getQueueNameMonths().size())     			
-				if(!segementFlag)
-				{			
-					monthForQS=monthNo;
-					if(monthNo>=agent.getSegNameMonths().size())
-					{
-						monthForQS=agent.getSegNameMonths().size()-1;
-					}
-					segementFlag = agent.getSegNameMonths().get(monthForQS).equalsIgnoreCase(segmentName);
-				}
-				if(!queueFlag)
+			if(!segementFlag)
+			{			
+				monthForQS=monthNo;
+				if(monthNo>=agent.getSegNameMonths().size())
 				{
-					monthForQS=monthNo;
-					if(monthNo>=agent.getQueueNameMonths().size())
-					{
-						monthForQS=agent.getQueueNameMonths().size()-1;
-					}		
-					queueFlag = agent.getQueueNameMonths().get(monthForQS).equalsIgnoreCase(queueName);
+					monthForQS=agent.getSegNameMonths().size()-1;
 				}
-				if(segementFlag && queueFlag)
-				{			
-					if(agent.getPF().equalsIgnoreCase("fail"))
-					{								
-						if(resultIndex==0)//Execute only once resultIndex can be any value between 0 to 3.
-						{							
-							AgentsAttritionByCategory[monthNo][totalAgentsByCategoryAttrition[0].length-1]+=1;						
-						}
-					}					
-					else
-					{					
-						AgentsAttritionByCategory[monthNo][resultIndex]+=1;
-					}	
-				}
-				segementFlag=segmentName==null;
-				queueFlag= queueName==null;
-			}			
+				segementFlag = agent.getSegNameMonths().get(monthForQS).equalsIgnoreCase(segmentName);
+			}
+			if(!queueFlag)
+			{
+				monthForQS=monthNo;
+				if(monthNo>=agent.getQueueNameMonths().size())
+				{
+					monthForQS=agent.getQueueNameMonths().size()-1;
+				}		
+				queueFlag = agent.getQueueNameMonths().get(monthForQS).equalsIgnoreCase(queueName);
+			}
+			if(segementFlag && queueFlag)
+			{							
+					AgentsAttritionByCategory[monthNo][0]+=1;
+			}
+			segementFlag=segmentName==null;
+			queueFlag= queueName==null;		
 		}
 		
 		public static void displayAttritionAnalysisWithoutQuartiles()
@@ -2252,5 +1786,10 @@ public class AllAnalysisKpiCohort
         	   cumulativePercentages=0;
         	   cumulativePercentagesFail=0;
             }	          
+		}
+		
+		public static void initializeStaticVariables()
+		{
+			rowCount = 0;rowCountSheet2=0;rowCountSheet3=0;rowCountSheet4=0;rowCountSheet5=0;rowCountSheet6=0;
 		}
 }
